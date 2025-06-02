@@ -73,7 +73,7 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                 <?php if(SessionHelper::isLoggedIn()): ?>
                 <li class="nav-item">
                     <a class="nav-link text-white">
-                        <i class="fas fa-user-circle"></i> <?php echo $_SESSION['fullname']; ?>
+                        <i class="fas fa-user-circle"></i> <?php echo $_SESSION['username']; ?>
                     </a>
                 </li>
                 <li class="nav-item">
