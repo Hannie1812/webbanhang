@@ -35,25 +35,18 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                     </a>
                 </li>
                 <?php if (SessionHelper::isAdmin()): ?>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white" href="#" id="productDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-boxes"></i> Sản phẩm
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="productDropdown">
-                        <a class="dropdown-item" href="/webbanhang/Product/list">Danh sách sản phẩm</a>
-                        <a class="dropdown-item" href="/webbanhang/Product/add">Thêm sản phẩm</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Product/list">Quản lý sản phẩm</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white" href="#" id="categoryDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-th-list"></i> Danh mục
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-                        <a class="dropdown-item" href="/webbanhang/Category/">Danh sách danh mục</a>
-                        <a class="dropdown-item" href="/webbanhang/Category/add">Thêm danh mục</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Category/list">Quản lý danh mục</a>
+                </li>
+                <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Product/">Danh sách sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
                 </li>
                 <?php endif; ?>
             </ul>

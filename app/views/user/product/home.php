@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/../shares/header.php'; ?>
+<?php include_once __DIR__ . '/../../shares/header.php'; ?>
 <div class="container mt-5">
     <form class="form-inline mb-4" method="get" action="">
         <input type="text" name="search" class="form-control mr-2" placeholder="Tìm kiếm tên sản phẩm"
@@ -28,8 +28,10 @@
 
                     <!-- Gói 2 nút lại với flex để căn đều dưới -->
                     <div class="mt-auto d-flex flex-column gap-2">
-                        <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="btn btn-primary">Xem chi tiết</a>
-                        <a href="/webbanhang/Product/addToCart/<?php echo $product->id; ?>" class="btn btn-success mt-2">
+                        <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="btn btn-primary">Xem chi
+                            tiết</a>
+                        <a href="/webbanhang/Product/addToCart/<?php echo $product->id; ?>"
+                            class="btn btn-success mt-2">
                             <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
                         </a>
                     </div>
@@ -40,4 +42,4 @@
         <?php endforeach; ?>
     </div>
 </div>
-<?php include_once __DIR__ . '/../shares/footer.php'; ?>
+<?php include_once __DIR__ . '/../../shares/footer.php'; ?>

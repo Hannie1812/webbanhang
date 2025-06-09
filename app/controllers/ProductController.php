@@ -36,7 +36,7 @@ class ProductController
         } else {
             $products = $this->productModel->getProducts();
         }
-        include 'app/views/Product/home.php';
+        include 'app/views/user/product/home.php';
     }
 
     public function list()
@@ -47,7 +47,12 @@ class ProductController
         } else {
             $products = $this->productModel->getProducts();
         }
-        include 'app/views/Product/list.php';
+
+        if ($this->isAdmin()) {
+            include 'app/views/admin/product/list.php';
+        } else {
+            include 'app/views/user/product/home.php';
+        }
     }
 
     public function show($id)

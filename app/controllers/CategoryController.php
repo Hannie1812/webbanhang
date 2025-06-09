@@ -22,15 +22,19 @@ class CategoryController
         } else {
             $categories = $this->categoryModel->getCategories();
         }
-        include 'app/views/category/list.php';
+        include 'app/views/admin/category/list.php';
     }
-    
+    public function list()
+    {
+        $categories = $this->categoryModel->getCategories();
+        include 'app/views/admin/category/list.php'; // Ensure this file exists
+    }
     public function show($id)
     {
         $category = $this->categoryModel->getCategoryById($id);
         
         if ($category) {
-            include 'app/views/category/show.php';
+            include 'app/views/admin/category/show.php';
         } else {
             echo "Không thấy danh mục.";
         }
@@ -38,7 +42,7 @@ class CategoryController
 
     public function add()
     {
-        include_once 'app/views/category/add.php';
+        include_once 'app/views/admin/category/add.php';
     }
 
     public function save()
@@ -49,7 +53,7 @@ class CategoryController
             $result = $this->categoryModel->addCategory($name);
             if (is_array($result)) {
                 $errors = $result;
-                include 'app/views/category/add.php';
+                include 'app/views/admin/category/add.php';
             } else {
                 header('Location: /webbanhang/Category');
             }

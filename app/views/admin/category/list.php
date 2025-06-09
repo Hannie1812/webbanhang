@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/../shares/header.php'; ?>
+<?php include_once __DIR__ . '/../../shares/header.php'; ?>
 
 <div class="container mt-4">
     <h3 class="mb-3">Danh sách danh mục</h3>
@@ -44,7 +44,7 @@
     </form>
 </div>
 
-<?php include_once __DIR__ . '/../shares/footer.php'; ?>
+<?php include_once __DIR__ . '/../../shares/footer.php'; ?>
 <script>
 document.getElementById('checkAllCategories').addEventListener('change', function() {
     const checkboxes = document.querySelectorAll('input[name="ids[]"]');
