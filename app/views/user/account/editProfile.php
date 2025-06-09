@@ -8,6 +8,14 @@
                     <h4 class="mb-0">Chỉnh sửa thông tin tài khoản</h4>
                 </div>
                 <div class="card-body">
+                    <!-- Hiển thị thông báo thành công -->
+                    <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="alert alert-success">
+                        <?php echo $_SESSION['success_message']; ?>
+                    </div>
+                    <?php unset($_SESSION['success_message']); ?>
+                    <?php endif; ?>
+
                     <form method="POST" action="/webbanhang/account/updateProfile">
                         <div class="form-group">
                             <label for="username">Tên đăng nhập:</label>
@@ -41,15 +49,19 @@
         </div>
     </div>
 </div>
-
 <script>
-const passwordField = document.getElementById('password');
-const togglePasswordButton = document.getElementById('togglePassword');
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    const togglePasswordButton = document.getElementById('togglePassword');
 
-togglePasswordButton.addEventListener('click', function() {
-    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordField.setAttribute('type', type);
-    this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+    togglePasswordButton.addEventListener('click', function() {
+        // Toggle giữa 'password' và 'text'
+        const isPassword = passwordField.type === 'password';
+        passwordField.type = isPassword ? 'text' : 'password';
+
+        // Cập nhật biểu tượng
+        this.innerHTML = isPassword ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
 });
 </script>
 

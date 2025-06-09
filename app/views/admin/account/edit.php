@@ -54,15 +54,17 @@
 
 <?php include_once __DIR__ . '/../../shares/footer.php'; ?>
 <script>
-const passwordField = document.getElementById('password');
-const togglePasswordButton = document.getElementById('togglePassword');
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    const togglePasswordButton = document.getElementById('togglePassword');
 
-togglePasswordButton.addEventListener('click', function() {
-    // Kiểm tra trạng thái hiện tại của trường mật khẩu
-    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordField.setAttribute('type', type);
+    togglePasswordButton.addEventListener('click', function() {
+        // Toggle giữa 'password' và 'text'
+        const isPassword = passwordField.type === 'password';
+        passwordField.type = isPassword ? 'text' : 'password';
 
-    // Thay đổi biểu tượng của nút
-    this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        // Cập nhật biểu tượng
+        this.innerHTML = isPassword ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
 });
 </script>

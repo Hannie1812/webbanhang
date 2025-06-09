@@ -58,7 +58,8 @@
                             </div>
 
                             <div class="text-right mb-3">
-                                <a href="/webbanhang/account/forgotPassword" class="text-primary small">Quên mật khẩu?</a>
+                                <a href="/webbanhang/account/forgotPassword" class="text-primary small">Quên mật
+                                    khẩu?</a>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block btn-lg">Đăng nhập</button>
@@ -90,15 +91,20 @@
 </section>
 
 <script>
-// Toggle password visibility
-function togglePassword() {
+document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById("passwordInput");
     const toggleIcon = document.getElementById("toggleIcon");
-    const isPassword = passwordInput.type === "password";
-    passwordInput.type = isPassword ? "text" : "password";
-    toggleIcon.classList.toggle("fa-eye");
-    toggleIcon.classList.toggle("fa-eye-slash");
-}
+
+    toggleIcon.addEventListener("click", function() {
+        // Toggle giữa 'password' và 'text'
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+
+        // Cập nhật biểu tượng
+        toggleIcon.classList.toggle("fa-eye");
+        toggleIcon.classList.toggle("fa-eye-slash");
+    });
+});
 </script>
 
 <?php include 'app/views/shares/footer.php'; ?>

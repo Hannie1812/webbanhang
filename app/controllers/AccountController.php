@@ -259,32 +259,45 @@ class AccountController {
             echo "Không tìm thấy tài khoản.";
         }
     }
-
     public function updateProfile()
     {
-        if (!SessionHelper::isLoggedIn()) {
-            echo "Bạn cần đăng nhập để chỉnh sửa thông tin tài khoản.";
-            exit;
-        }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $_SESSION['username'];
+            $username = $_POST['username'];
             $fullname = $_POST['fullname'];
-            $password = $_POST['password'] ?? null;
+            $password = $_POST['password'];
+
+            // Kiểm tra xem tài khoản có tồn tại
+            $query = "SELECT * FROM users WHERE username = :username";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->execute();
+            $account = $stmt->fetch(PDO::FETCH_OBJ);
+
+            if (!$account) {
+                echo "Tài khoản không tồn tại.";
+                exit;
+            }
+
+            // Cập nhật thông tin tài khoản
+            $query = "UPDATE users SET fullname = :fullname" . (!empty($password) ? ", password = :password" : "") . " WHERE username = :username";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':fullname', $fullname, PDO::PARAM_STR);
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
 
             if (!empty($password)) {
                 // Mã hóa mật khẩu mới
-                $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
             }
 
-            $result = $this->accountModel->updatePassword($username, $password);
-            $resultFullname = $this->accountModel->updateAccountWithPassword(null, $username, $fullname, null, $password);
-
-            if ($result && $resultFullname) {
-                header('Location: /webbanhang/account/editProfile');
-            } else {
-                echo "Đã xảy ra lỗi khi cập nhật thông tin tài khoản.";
-            }
+            $stmt->execute();
+// Thêm thông báo thành công
+        $_SESSION['success_message'] = "Thông tin tài khoản đã được cập nhật thành công.";
+            header('Location: /webbanhang/account/editProfile');
+            exit;
+        } else {
+            echo "Phương thức không hợp lệ.";
+            exit;
         }
     }
 }

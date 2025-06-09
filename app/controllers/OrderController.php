@@ -12,7 +12,7 @@ class OrderController
     public function list()
     {
         $query = "SELECT orders.id, orders.created_at, orders.name, orders.phone, orders.address, orders.status,
-                        users.username,
+                        users.fullname,
                         SUM(order_details.quantity * order_details.price) AS total
                 FROM orders
                 INNER JOIN order_details ON orders.id = order_details.order_id

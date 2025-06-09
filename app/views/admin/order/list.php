@@ -22,7 +22,7 @@
                 <tr>
                     <td><?php echo $index + 1; ?></td>
                     <td><?php echo htmlspecialchars(date('d/m/Y H:i', strtotime($order->created_at)), ENT_QUOTES, 'UTF-8'); ?>
-                    <td><?php echo htmlspecialchars($order->username, ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars($order->fullname, ENT_QUOTES, 'UTF-8'); ?></td>
                     </td>
                     <td><?php echo htmlspecialchars($order->name, ENT_QUOTES, 'UTF-8'); ?></td>
                     <td><?php echo htmlspecialchars($order->phone, ENT_QUOTES, 'UTF-8'); ?></td>
