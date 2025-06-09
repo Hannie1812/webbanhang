@@ -12,12 +12,14 @@ class AccountController {
     }
     public function list()
     {
-        if (!SessionHelper::isAdmin()) {
-            echo "Bạn không có quyền truy cập trang này.";
-            exit;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        if (!empty($search)) {
+            $accounts = $this->accountModel->searchAccountsByName($search);
+        } else {
+            $accounts = $this->accountModel->getAllAccounts();
         }
 
-        $accounts = $this->accountModel->getAllAccounts();
         include 'app/views/admin/account/list.php';
     }
 

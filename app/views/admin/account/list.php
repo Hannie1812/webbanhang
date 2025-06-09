@@ -2,6 +2,11 @@
 
 <div class="container mt-4">
     <h3 class="mb-3">Danh sách tài khoản</h3>
+    <form class="form-inline mb-3" method="get" action="">
+        <input type="text" name="search" class="form-control mr-2" placeholder="Tìm kiếm tên người dùng"
+            value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search'], ENT_QUOTES, 'UTF-8') : ''; ?>">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
     <table class="table table-bordered table-hover">
         <thead class="thead-light">
             <tr>

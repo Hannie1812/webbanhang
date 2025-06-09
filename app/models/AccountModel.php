@@ -106,4 +106,13 @@ class AccountModel
 
         return $stmt->execute();
     }
+    public function searchAccountsByName($name)
+    {
+        $query = "SELECT * FROM users WHERE username LIKE :name";
+        $stmt = $this->conn->prepare($query);
+        $searchTerm = '%' . $name . '%';
+        $stmt->bindParam(':name', $searchTerm);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 }
