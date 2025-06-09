@@ -35,3 +35,22 @@ if (!method_exists($controller, $action)) {
 }
 // Gọi action với các tham số còn lại (nếu có)
 call_user_func_array([$controller, $action], array_slice($url, 2));
+
+if ($controller === 'Order') {
+    $orderController = new OrderController();
+
+    if ($action === 'list') {
+        $orderController->list();
+    } elseif ($action === 'updateOrderStatusAdmin') {
+        $id = $_GET['id'] ?? null;
+        $status = $_GET['status'] ?? null;
+
+        if ($id && $status) {
+            $orderController->updateOrderStatusAdmin($id, $status);
+        } else {
+            echo "Thiếu thông tin đơn hàng hoặc trạng thái.";
+        }
+    } else {
+        echo "Action không được tìm thấy.";
+    }
+}

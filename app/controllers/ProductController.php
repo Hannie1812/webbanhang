@@ -443,24 +443,20 @@ class ProductController
     }
     public function orderHistory()
     {
-        if (!$this->isLoggedIn()) {
-            echo "Bạn cần đăng nhập để xem lịch sử đơn hàng.";
-            exit;
-        }
-
-        $user_id = SessionHelper::getUserId();
-        $query = "SELECT orders.id, orders.created_at, orders.name, orders.phone, orders.address, 
+        $query = "SELECT orders.id, orders.created_at, orders.name, orders.phone, orders.address, orders.status,
+                        users.username,
                         SUM(order_details.quantity * order_details.price) AS total
                 FROM orders
                 INNER JOIN order_details ON orders.id = order_details.order_id
+                INNER JOIN users ON orders.user_id = users.id
                 WHERE orders.user_id = :user_id
                 GROUP BY orders.id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
         $orders = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        include 'app/views/Product/orderHistory.php';
+        include 'app/views/product/orderHistory.php';
     }
 }
 ?>

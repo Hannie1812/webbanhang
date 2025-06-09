@@ -33,11 +33,11 @@ require_once __DIR__ . '/../../models/CategoryModel.php';
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Menu trái -->
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link text-white" href="/webbanhang/Product/">
                         <i class="fas fa-home"></i> Trang chủ
                     </a>
-                </li>
+                </li> -->
                 <?php if (SessionHelper::isAdmin()): ?>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/webbanhang/Product/list">Quản lý sản phẩm</a>
@@ -47,6 +47,9 @@ require_once __DIR__ . '/../../models/CategoryModel.php';
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/webbanhang/Account/list">Quản lý tài khoản</a>
+                </li>
+                <li class="nav-item text-white">
+                    <a class="nav-link text-white" href="/webbanhang/Order/list">Quản lý đơn hàng</a>
                 </li>
                 <?php else: ?>
                 <li class="nav-item">
