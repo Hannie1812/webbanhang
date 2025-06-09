@@ -99,7 +99,8 @@ require_once __DIR__ . '/../../models/CategoryModel.php';
                             <i class="fas fa-user-edit"></i> Chỉnh sửa tài khoản
                         </a>
 
-                        <a class="dropdown-item" href="/webbanhang/Product/cart">Giỏ hàng</a>
+                        <a class="dropdown-item" href="/webbanhang/Product/cart"><i class="fas fa-shopping-cart">Giỏ
+                                hàng</a>
                         <a class="dropdown-item" href="/webbanhang/Product/orderHistory">Lịch sử đơn hàng</a>
                         <a class="dropdown-item" href="/webbanhang/account/logout">
                             <i class="fas fa-sign-out-alt"></i> Logout
