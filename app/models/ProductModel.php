@@ -138,5 +138,13 @@ class ProductModel
         }
         return $str;
     }
+    public function getProductsByCategory($category_id)
+    {
+        $query = "SELECT * FROM product WHERE category_id = :category_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 }
 ?>

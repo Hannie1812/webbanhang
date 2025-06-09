@@ -20,12 +20,11 @@ class CategoryModel
 
     public function getCategoryById($id)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+        $query = "SELECT * FROM category WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
-        return $result;
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
     
     public function addCategory($name)
@@ -95,6 +94,24 @@ class CategoryModel
             }
         }
         return $str;
+    }
+    
+    public function searchCategoriesByName($name)
+    {
+        $query = "SELECT * FROM category WHERE name LIKE :name";
+        $stmt = $this->conn->prepare($query);
+        $searchTerm = '%' . $name . '%';
+        $stmt->bindParam(':name', $searchTerm);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function getAllCategories()
+    {
+        $query = "SELECT * FROM category";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }
 ?>

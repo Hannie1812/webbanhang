@@ -27,7 +27,7 @@
                         <td><input type="checkbox" name="ids[]" value="<?php echo $category->id; ?>"></td>
                         <td><?php echo $index + 1; ?></td>
                         <td>
-                            <a href="/webbanhang/Category/show/<?php echo $category->id; ?>">
+                            <a href="/webbanhang/Category/showProductsByCategory/<?php echo $category->id; ?>">
                                 <?php echo htmlspecialchars($category->name, ENT_QUOTES, 'UTF-8'); ?>
                             </a>
                         </td>

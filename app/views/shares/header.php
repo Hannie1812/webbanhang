@@ -5,6 +5,10 @@ $currentPath = rtrim($_SERVER['REQUEST_URI'], '/'); // loại bỏ dấu / cuố
 // Sửa điều kiện để hiển thị banner trên tất cả các trang thuộc controller Product
 $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
 ?>
+<?php
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/CategoryModel.php';
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -36,25 +40,35 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                 </li>
                 <?php if (SessionHelper::isAdmin()): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/list">Quản lý sản phẩm</a>
+                    <a class="nav-link text-white" href="/webbanhang/Product/list">Quản lý sản phẩm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Category/list">Quản lý danh mục</a>
+                    <a class="nav-link text-white" href="/webbanhang/Category/list">Quản lý danh mục</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Account/list">Quản lý tài khoản</a>
+                    <a class="nav-link text-white" href="/webbanhang/Account/list">Quản lý tài khoản</a>
                 </li>
                 <?php else: ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/">Danh sách sản phẩm</a>
+                    <a class="nav-link text-white" href="/webbanhang/Product/">Danh sách sản phẩm</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
-                </li>
-                <?php endif; ?>
-                <?php if (SessionHelper::isLoggedIn()): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/orderHistory">Lịch sử đơn hàng</a>
+                <?php
+                $categories = (new CategoryModel((new Database())->getConnection()))->getCategories();
+                ?>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="categoryDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-th-list"></i> Danh mục
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                        <?php foreach ($categories as $category): ?>
+                        <a class="dropdown-item"
+                            href="/webbanhang/Category/showProductsByCategory/<?php echo $category->id; ?>">
+                            <?php echo htmlspecialchars($category->name, ENT_QUOTES, 'UTF-8'); ?>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </li>
                 <?php endif; ?>
             </ul>
@@ -72,15 +86,22 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
             <!-- Người dùng -->
             <ul class="navbar-nav ml-3">
                 <?php if(SessionHelper::isLoggedIn()): ?>
-                <li class="nav-item">
-                    <a class="nav-link text-white">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> <?php echo $_SESSION['username']; ?>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/webbanhang/account/logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="/webbanhang/account/editProfile">
+                            <i class="fas fa-user-edit"></i> Chỉnh sửa tài khoản
+                        </a>
+
+                        <a class="dropdown-item" href="/webbanhang/Product/cart">Giỏ hàng</a>
+                        <a class="dropdown-item" href="/webbanhang/Product/orderHistory">Lịch sử đơn hàng</a>
+                        <a class="dropdown-item" href="/webbanhang/account/logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </li>
                 <?php else: ?>
                 <li class="nav-item">
@@ -88,7 +109,6 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                 </li>
-
                 <?php endif; ?>
             </ul>
         </div>

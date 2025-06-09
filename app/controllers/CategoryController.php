@@ -2,16 +2,19 @@
 // Require SessionHelper and other necessary files
 require_once('app/config/database.php');
 require_once('app/models/CategoryModel.php');
+require_once('app/models/ProductModel.php');
 
 class CategoryController
 {
     private $categoryModel;
+    private $productModel;
     private $db;
 
     public function __construct()
     {
         $this->db = (new Database())->getConnection();
         $this->categoryModel = new CategoryModel($this->db);
+        $this->productModel = new ProductModel($this->db); // Khởi tạo ProductModel
     }
 
     public function index()
@@ -26,8 +29,15 @@ class CategoryController
     }
     public function list()
     {
-        $categories = $this->categoryModel->getCategories();
-        include 'app/views/admin/category/list.php'; // Ensure this file exists
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        if (!empty($search)) {
+            $categories = $this->categoryModel->searchCategoriesByName($search);
+        } else {
+            $categories = $this->categoryModel->getAllCategories();
+        }
+
+        include 'app/views/admin/category/list.php';
     }
     public function show($id)
     {
@@ -89,6 +99,17 @@ class CategoryController
         } else {
             echo "Không có danh mục nào được chọn để xóa.";
         }
+    }
+    public function showProductsByCategory($category_id)
+    {
+        $category = $this->categoryModel->getCategoryById($category_id);
+        if (!$category) {
+            echo "Không tìm thấy danh mục.";
+            exit;
+        }
+
+        $products = $this->productModel->getProductsByCategory($category_id);
+        include 'app/views/categoryProducts.php';
     }
 }
 ?>

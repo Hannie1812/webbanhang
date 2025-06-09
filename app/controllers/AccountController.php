@@ -241,4 +241,48 @@ class AccountController {
             }
         }
     }
+    public function editProfile()
+    {
+        if (!SessionHelper::isLoggedIn()) {
+            echo "Bạn cần đăng nhập để chỉnh sửa thông tin tài khoản.";
+            exit;
+        }
+
+        $username = $_SESSION['username'];
+        $account = $this->accountModel->getAccountByUsername($username);
+
+        if ($account) {
+            include 'app/views/user/account/editProfile.php';
+        } else {
+            echo "Không tìm thấy tài khoản.";
+        }
+    }
+
+    public function updateProfile()
+    {
+        if (!SessionHelper::isLoggedIn()) {
+            echo "Bạn cần đăng nhập để chỉnh sửa thông tin tài khoản.";
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $username = $_SESSION['username'];
+            $fullname = $_POST['fullname'];
+            $password = $_POST['password'] ?? null;
+
+            if (!empty($password)) {
+                // Mã hóa mật khẩu mới
+                $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+            }
+
+            $result = $this->accountModel->updatePassword($username, $password);
+            $resultFullname = $this->accountModel->updateAccountWithPassword(null, $username, $fullname, null, $password);
+
+            if ($result && $resultFullname) {
+                header('Location: /webbanhang/account/editProfile');
+            } else {
+                echo "Đã xảy ra lỗi khi cập nhật thông tin tài khoản.";
+            }
+        }
+    }
 }
