@@ -30,7 +30,8 @@
                     <td class="text-danger font-weight-bold"><?php echo number_format($order->total, 0, ',', '.'); ?>
                         VNĐ
                     </td>
-                    <td><?php echo htmlspecialchars($order->status, ENT_QUOTES, 'UTF-8'); ?></td>
+
+                    <td><?php echo translateStatus($order->status); ?></td>
                     <td>
                         <?php if ($order->status === 'pending'): ?>
                         <a href="/webbanhang/Order/updateOrderStatusAdmin/<?php echo $order->id; ?>/confirmed"
@@ -39,6 +40,7 @@
                             class="btn btn-sm btn-danger">Hủy</a>
                         <?php endif; ?>
                     </td>
+
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -46,4 +48,18 @@
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../../shares/footer.php'; ?>
+<?php include_once __DIR__ . '/../../shares/footer.php'; ?><?php
+function translateStatus($status)
+{
+    switch ($status) {
+        case 'pending':
+            return 'Đang chờ xử lý';
+        case 'confirmed':
+            return 'Đã xác nhận';
+        case 'cancelled':
+            return 'Đã hủy';
+        default:
+            return 'Không xác định';
+    }
+}
+?>

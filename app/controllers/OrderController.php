@@ -12,11 +12,11 @@ class OrderController
     public function list()
     {
         $query = "SELECT orders.id, orders.created_at, orders.name, orders.phone, orders.address, orders.status,
-                        accounts.username,
+                        users.username,
                         SUM(order_details.quantity * order_details.price) AS total
                 FROM orders
                 INNER JOIN order_details ON orders.id = order_details.order_id
-                INNER JOIN accounts ON orders.user_id = accounts.id
+                INNER JOIN users ON orders.user_id = users.id
                 GROUP BY orders.id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
