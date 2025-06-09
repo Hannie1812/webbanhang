@@ -58,6 +58,9 @@
                         </div>
                     </div>
                     <?php endif; ?>
+                    <a href="/webbanhang/Product/confirmOrder/<?php echo htmlspecialchars($order_id, ENT_QUOTES, 'UTF-8'); ?>"
+                        class="btn
+                    btn-success">Xác nhận đơn hàng</a>
                     <a href="/webbanhang/Product/" class="btn btn-primary">Tiếp tục mua sắm</a>
                 </div>
             </div>

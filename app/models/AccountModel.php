@@ -8,7 +8,41 @@ class AccountModel
     {
         $this->conn = $db;
     }
-    
+    public function getAllAccounts()
+    {
+        $query = "SELECT * FROM users";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function getAccountById($id)
+    {
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function updateAccount($id, $username, $fullname, $role)
+    {
+        $query = "UPDATE users SET username = :username, fullname = :fullname, role = :role WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':role', $role);
+        return $stmt->execute();
+    }
+
+    public function deleteAccount($id)
+    {
+        $query = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
     public function getAccountByUsername($username)
     {
         $query = "SELECT * FROM users WHERE username = :username";
@@ -51,5 +85,25 @@ class AccountModel
         }
         
         return false;
+    }
+    public function updateAccountWithPassword($id, $username, $fullname, $role, $password = null)
+    {
+        if ($password) {
+            $query = "UPDATE users SET username = :username, fullname = :fullname, role = :role, password = :password WHERE id = :id";
+        } else {
+            $query = "UPDATE users SET username = :username, fullname = :fullname, role = :role WHERE id = :id";
+        }
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':role', $role);
+
+        if ($password) {
+            $stmt->bindParam(':password', $password);
+        }
+
+        return $stmt->execute();
     }
 }

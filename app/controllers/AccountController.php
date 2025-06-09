@@ -10,7 +10,72 @@ class AccountController {
         $this->db = (new Database())->getConnection();
         $this->accountModel = new AccountModel($this->db);
     }
+    public function list()
+    {
+        if (!SessionHelper::isAdmin()) {
+            echo "Bạn không có quyền truy cập trang này.";
+            exit;
+        }
 
+        $accounts = $this->accountModel->getAllAccounts();
+        include 'app/views/admin/account/list.php';
+    }
+
+    public function edit($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            echo "Bạn không có quyền truy cập trang này.";
+            exit;
+        }
+
+        $account = $this->accountModel->getAccountById($id);
+        if ($account) {
+            include 'app/views/admin/account/edit.php';
+        } else {
+            echo "Không tìm thấy tài khoản.";
+        }
+    }
+    public function update()
+    {
+        if (!SessionHelper::isAdmin()) {
+            echo "Bạn không có quyền truy cập trang này.";
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $username = $_POST['username'];
+            $fullname = $_POST['fullname'];
+            $role = $_POST['role'];
+            $password = $_POST['password'] ?? null;
+
+            if (!empty($password)) {
+                // Mã hóa mật khẩu mới
+                $password = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+            }
+
+            $result = $this->accountModel->updateAccountWithPassword($id, $username, $fullname, $role, $password);
+
+            if ($result) {
+                header('Location: /webbanhang/Account/list');
+            } else {
+                echo "Đã xảy ra lỗi khi cập nhật tài khoản.";
+            }
+        }
+    }
+    public function delete($id)
+    {
+        if (!SessionHelper::isAdmin()) {
+            echo "Bạn không có quyền truy cập trang này.";
+            exit;
+        }
+
+        if ($this->accountModel->deleteAccount($id)) {
+            header('Location: /webbanhang/Account/list');
+        } else {
+            echo "Đã xảy ra lỗi khi xóa tài khoản.";
+        }
+    }
     function register(){
         include_once 'app/views/account/register.php';
     }

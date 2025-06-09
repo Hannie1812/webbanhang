@@ -280,18 +280,13 @@ class ProductController
             $name = $_POST['name'];
             $phone = $_POST['phone'];
             $address = $_POST['address'];
-            
+
             // Kiểm tra giỏ hàng
-            if ($this->isLoggedIn())
-            {
-                // Lấy giỏ hàng từ database
+            if ($this->isLoggedIn()) {
                 $user_id = SessionHelper::getUserId();
                 $cart_id = $this->cartModel->createCart($user_id);
                 $cart = $this->cartModel->getCartItems($cart_id);
-            }
-            else 
-            {
-                // Lấy giỏ hàng từ session
+            } else {
                 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
             }
 
@@ -299,20 +294,21 @@ class ProductController
                 echo "Giỏ hàng trống.";
                 return;
             }
-            
+
             // Bắt đầu giao dịch
             $this->db->beginTransaction();
-            
+
             try {
                 // Lưu thông tin đơn hàng vào bảng orders
-                $query = "INSERT INTO orders (name, phone, address) VALUES (:name, :phone, :address)";
+                $query = "INSERT INTO orders (user_id, name, phone, address, status, created_at) VALUES (:user_id, :name, :phone, :address, 'pending', NOW())";
                 $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':user_id', $user_id);
                 $stmt->bindParam(':name', $name);
                 $stmt->bindParam(':phone', $phone);
                 $stmt->bindParam(':address', $address);
                 $stmt->execute();
                 $order_id = $this->db->lastInsertId();
-                
+
                 // Lưu chi tiết đơn hàng vào bảng order_details
                 foreach ($cart as $product_id => $item) {
                     $query = "INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)";
@@ -324,51 +320,70 @@ class ProductController
                     $stmt->execute();
                 }
 
-                // Lấy lại thông tin đơn hàng và sản phẩm để truyền sang view xác nhận
-                $order = [
-                    'id' => $order_id,
-                    'customer_name' => $name,
-                    'customer_phone' => $phone,
-                    'customer_address' => $address,
-                    'created_at' => date('d/m/Y H:i'),
-                    'items' => []
-                ];
-                foreach ($cart as $product_id => $item) {
-                    $order['items'][] = [
-                        'name' => $item['name'],
-                        'price' => $item['price'],
-                        'quantity' => $item['quantity']
-                    ];
-                }
+                // Lấy thông tin đơn hàng và danh sách sản phẩm để hiển thị
+                $query = "SELECT * FROM orders WHERE id = :order_id";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':order_id', $order_id);
+                $stmt->execute();
+                $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $query = "SELECT p.name, od.price, od.quantity 
+                        FROM order_details od 
+                        INNER JOIN product p ON od.product_id = p.id 
+                        WHERE od.order_id = :order_id";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':order_id', $order_id);
+                $stmt->execute();
+                $order['items'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Xóa giỏ hàng sau khi đặt hàng thành công
-                if ($this->isLoggedIn())
-                {
-                    // Xóa giỏ hàng từ database
+                if ($this->isLoggedIn()) {
                     $this->cartModel->clearCart($cart_id);
-                }
-                else 
-                {
+                } else {
                     unset($_SESSION['cart']);
                 }
 
                 // Commit giao dịch
                 $this->db->commit();
-                
-                // Hiển thị trang xác nhận đơn hàng với thông tin hóa đơn
+
+                // Hiển thị trang xác nhận đơn hàng
                 include 'app/views/Product/orderConfirmation.php';
                 exit;
             } catch (Exception $e) {
-                // Rollback giao dịch nếu có lỗi
                 $this->db->rollBack();
                 echo "Đã xảy ra lỗi khi xử lý đơn hàng: " . $e->getMessage();
             }
         }
     }
-    
-    public function orderConfirmation()
+    public function confirmOrder($order_id)
     {
-        include 'app/views/Product/orderConfirmation.php';
+        if (!$this->isLoggedIn()) {
+            echo "Bạn cần đăng nhập để xác nhận đơn hàng.";
+            exit;
+        }
+
+        // Kiểm tra đơn hàng
+        $query = "SELECT * FROM orders WHERE id = :order_id AND user_id = :user_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':order_id', $order_id);
+        $stmt->bindParam(':user_id', SessionHelper::getUserId());
+        $stmt->execute();
+        $order = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if (!$order) {
+            echo "Không tìm thấy đơn hàng.";
+            exit;
+        }
+
+        // Cập nhật trạng thái đơn hàng
+        $updateQuery = "UPDATE orders SET status = 'confirmed' WHERE id = :order_id";
+        $updateStmt = $this->db->prepare($updateQuery);
+        $updateStmt->bindParam(':order_id', $order_id);
+        $updateStmt->execute();
+
+        echo "Đơn hàng đã được xác nhận thành công.";
+        header('Location: /webbanhang/Product/orderHistory');
+        exit;
     }
 
     public function updateCartQuantity()
@@ -426,6 +441,26 @@ class ProductController
             echo "Không có sản phẩm nào được chọn để xóa.";
         }
     }
+    public function orderHistory()
+    {
+        if (!$this->isLoggedIn()) {
+            echo "Bạn cần đăng nhập để xem lịch sử đơn hàng.";
+            exit;
+        }
 
+        $user_id = SessionHelper::getUserId();
+        $query = "SELECT orders.id, orders.created_at, orders.name, orders.phone, orders.address, 
+                        SUM(order_details.quantity * order_details.price) AS total
+                FROM orders
+                INNER JOIN order_details ON orders.id = order_details.order_id
+                WHERE orders.user_id = :user_id
+                GROUP BY orders.id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $orders = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        include 'app/views/Product/orderHistory.php';
+    }
 }
 ?>

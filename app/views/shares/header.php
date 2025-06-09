@@ -41,12 +41,20 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                 <li class="nav-item">
                     <a class="nav-link" href="/webbanhang/Category/list">Quản lý danh mục</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Account/list">Quản lý tài khoản</a>
+                </li>
                 <?php else: ?>
                 <li class="nav-item">
                     <a class="nav-link" href="/webbanhang/Product/">Danh sách sản phẩm</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
+                </li>
+                <?php endif; ?>
+                <?php if (SessionHelper::isLoggedIn()): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/Product/orderHistory">Lịch sử đơn hàng</a>
                 </li>
                 <?php endif; ?>
             </ul>
@@ -80,6 +88,7 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                 </li>
+
                 <?php endif; ?>
             </ul>
         </div>
@@ -131,7 +140,6 @@ $isHome = (strpos($currentPath, '/webbanhang/Product') !== false);
     <?php endif; ?>
     <!-- Sticky Cart Button & Back to Top Button -->
     <?php if (SessionHelper::isLoggedIn()): ?>
-
     <a href="/webbanhang/Product/cart" class="sticky-cart-btn" title="Xem giỏ hàng">
         <i class="fas fa-shopping-cart"></i>
         <?php if (SessionHelper::isLoggedIn()): ?>
